@@ -21,15 +21,20 @@ ordenados por sucursales y para cada sucursal ordenar dichos préstamos
 cronológicamente.
 */
 
+spool Ejercicio2 SET echo OFF
+SELECT * FROM PRESTAMO p ORDER BY p.cod_suc, fecha_ini;
+spool OFF
+show spool
+
 /*
 3. Guardar en un fichero de comandos a través del comando save la siguiente
 consulta: mostrar la información de todos los autores de los que o bien no se conoce
 su fecha de nacimiento o de muerte. Para ello será necesario
-a. Realizar la consulta en el entorno de SQL*Plus
-b. Salvar el contenido del buffer indicando el nombre del fichero
-save nombre
-c. Verificar que se ha creado correctamente el archivo generado
-nombre.sql
+    a. Realizar la consulta en el entorno de SQL*Plus
+    b. Salvar el contenido del buffer indicando el nombre del fichero
+    save nombre
+    c. Verificar que se ha creado correctamente el archivo generado
+    nombre.sql
 */
 
 /*
