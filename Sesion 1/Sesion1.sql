@@ -37,10 +37,15 @@ su fecha de nacimiento o de muerte. Para ello será necesario
     nombre.sql
 */
 
+SELECT * FROM AUTOR WHERE ano_nac IS NULL OR ano_fall IS NULL;
+SAVE Ejercicio3
+
 /*
 4. Volver a cargar el fichero de comandos del ejercicio anterior y ejecutarlo activando
 la visualización del contenido a través del comando echo
 */
+
+SET echo ON @Ejercicio3
 
 /*
 5. Volver a realizar un archivo de comandos que saque el listado de todos los libros
