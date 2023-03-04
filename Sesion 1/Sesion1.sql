@@ -53,6 +53,11 @@ con los que cuenta la sucursal 1, 2 y 3 ordenados por ISBN y por sucursal,
 estableciendo pausas para su mejor visualización a través del comando pause.
 */
 
+SET PAUSE 'Pulse alguna tecla para continuar' 
+SET PAUSE ON
+SELECT l.isbn, cod_suc, titulo FROM LIBRO l, DISPONE d WHERE l.isbn = d.isbn
+AND cod_suc in (1, 2, 3) ORDER BY l.isbn, cod_suc;
+
 /*
 6. Volver a realizar un archivo de comandos que saque el listado de todos los libros
 con los que cuenta una sucursal, cuyo código se pasará como parámetro, ordenados
@@ -60,10 +65,18 @@ por ISBN, estableciendo pausas para su mejor visualización a través del comand
 pause.
 */
 
+SET PAUSE 'Pulse alguna tecla para continuar' 
+SET PAUSE ON
+SELECT l.isbn, titulo FROM LIBRO l, DISPONE d WHERE l.isbn = d.isbn AND
+cod_suc = 1 ORDER BY l.isbn;
+
 /*
 7. Sacar la información de todos los autores de los que o bien no se conoce su fecha de
 nacimiento o de muerte indicando además su nacionalidad y no el código de ésta.
 */
+
+SELECT a.nombre, apellido, ano_nac, ano_fall, n.nombre FROM AUTOR a, NACIONALIDAD n
+WHERE a-cod_nacion = n.codigo AND (ano_nac IS NULL OR ano_nac IS NULL);
 
 /*
 8. Ejecutaremos la consulta anterior con un formato que genere una salida más legible:
@@ -79,6 +92,19 @@ nacimiento o de muerte indicando además su nacionalidad y no el código de ést
     g. Formatee la nacionalidad empleando NACION como título y fijando la
     longitud de los datos en 15 caracteres.
 */
+
+SET pagesize 50
+SET linesize 80
+title 'INFORME DE AUTORES | CON FECHAS NO CONOCIDAS'
+btitle 'SERVICIO DE BIBLIOTECAS' column nombre 
+format a12 column apellido 
+format a12 column ano_nac wrap heading 'ANO NACIMIENTO' column ano_ fall wrap heading 'ANO|MUERTE' set pause 'Una tecla...' set pause on column nombre format a15 heading 'NACION'
+SELECT a.nombre, apellido, ano_nac, ano_fall, n.nombre FROM AUTOR a, NACIONALIDAD n 
+WHERE a.cod_nacion = n.codigo AND (ano_fall IS NULL OR ano_nac IS NULL); 
+title OFF 
+btitle OFF 
+CLEAR columns
+SET PAUSE OFF
 
 /*
 9. Volver a realizar la consulta anterior insertando ‘???’ en los lugares donde no se
