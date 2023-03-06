@@ -98,7 +98,10 @@ SET linesize 80
 title 'INFORME DE AUTORES | CON FECHAS NO CONOCIDAS'
 btitle 'SERVICIO DE BIBLIOTECAS' column nombre 
 format a12 column apellido 
-format a12 column ano_nac wrap heading 'ANO NACIMIENTO' column ano_ fall wrap heading 'ANO|MUERTE' set pause 'Una tecla...' set pause on column nombre format a15 heading 'NACION'
+format a12 column ano_nac wrap heading 'ANO NACIMIENTO' column ano_ fall wrap heading 'ANO|MUERTE' 
+SET PAUSE 'Una tecla...' 
+SET PAUSE ON 
+column nombre format a15 heading 'NACION'
 SELECT a.nombre, apellido, ano_nac, ano_fall, n.nombre FROM AUTOR a, NACIONALIDAD n 
 WHERE a.cod_nacion = n.codigo AND (ano_fall IS NULL OR ano_nac IS NULL); 
 title OFF 
