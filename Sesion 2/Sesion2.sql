@@ -48,21 +48,41 @@ escrita por de Javier Moro (Madrid, 1955) y publicada por la editorial Planeta e
 todas las tablas que sea necesario.
 */
 
-
+INSERT INTO AUTOR (codigo, nombre, apellido, ano_nac, cod_nacion)
+VALUES (159, 'JAVIER', 'MORO', 1955, 9);
+INSERT INTO ESCRIBE VALUES (159, 8408104829);
+INSERT INTO EDITORIAL VALUES (12, 'PLANETA');
+INSERT INTO LIBRO VALUES (8408104829, 'EL PREMIO ERES TÚ', 2011, 12);
+INSERT INTO DISPONE VALUES (1, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (2, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (3, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (4, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (5, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (6, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (7, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (8, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (9, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (10, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (11, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (12, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (13, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (14, 8408104829, 1, 1);
+INSERT INTO DISPONE VALUES (15, 8408104829, 1, 1);
 
 /*
 6. Añadir una nueva sucursal en la ciudad de Soria, en la dirección “Calle de los
 Caballeros, 32”. Esta sucursal tendrá asociado el código 16.
 */
 
-
+INSERT INTO SUCURSAL VALUES (16, 'alle de los Caballeros, 32', 'Soria', 'Soria');
 
 /*
 7. La nueva sucursal creada en la ciudad de Soria en el ejercicio anterior, se dota con
 los mismos ejemplares que tiene la sucursal 2.
 */
 
-
+INSERT INTO DISPONE (SELECT s.codigo, isbn, num_ejemplares FROM SUCURSAL s, DISPONE d
+WHERE s.codigo = 16 AND d.cod_suc = 2);
 
 /*
 8. El lector Francisco Roldán se ha dado de baja en la biblioteca, por tanto debe ser
@@ -71,21 +91,26 @@ que tengan que ver con ese alumno en todas las tablas y además en el orden
 adecuado).
 */
 
-
+DELETE FROM PRESTAMO WHERE codigo = (SELECT codigo FROM LECTOR 
+WHERE nombre = 'Francisco' AND ape_1 = 'Roldán');
+DELETE FROM LECTOR WHERE nombre = 'Francisco' AND ape_1 = 'Roldán';
 
 /*
 9. Incrementar en dos unidades disponibles por sucursal el libro del que más préstamos
 se realizan.
 */
 
-
+UPDATE DISPONE SET num_ejemplares = num_ejemplares  + 2, num_disponibles = num_disponibles + 2
+WHERE isbn IN (SELECT isbn FROM PRESTAMO p GROUP BY isbn HAVING COUNT(*) = (SELECT MAX(COUNT(*)) FROM PRESTAMO GROUP BY isbn));
 
 /*
 10. Realizar un incremento en 1 ejemplar en todas las sucursales de aquellos libros para
 los se han contabilizado más de 4 préstamos.
 */
 
-
+UPDATE DISPONE
+SET num_ejemplares = num_ejemplares + 1, num_disponibles = num_disponibles + 1
+WHERE isbn IN (SELECT isbn FROM PRESTAMO p GROUP BY cod_suc, isbn HAVING COUNT(*) > 4);
 
 /*
 11. Eliminar todos los préstamos de los lectores de la provincia de Zamora.
