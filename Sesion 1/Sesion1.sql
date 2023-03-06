@@ -110,3 +110,20 @@ SET PAUSE OFF
 9. Volver a realizar la consulta anterior insertando ‘???’ en los lugares donde no se
 conoce la fecha de nacimiento o defunción de los autores.
 */
+
+SET pagesize 50
+SET linesize 80
+ttitle 'INFORME DE AUTORES | CON FECHAS NO CONOCIDAS'
+btitle 'SERVICIO DE BIBLIOTECAS' column nombre
+format a12 column apellido
+format a12 column ano_nac wrap heading 'ANO | NACIMIENTO' NULL '?'
+column ano_fall wrap heading 'ANO | MUERTE' NULL '?'
+SET PAUSE 'Pulse una tecla ' 
+SET PAUSE ON
+column nombre format a15 heading 'NACION'
+SELECT a.nombre, apellido, ano_nac, ano_fall, n.nombre FROM AUTOR a, NACIONALIDAD n
+WHERE a.cod_nacion = n.codigo AND (ano_fall IS NULL OR ano_nac IS NULL);
+ttitle OFF
+btitle OFF 
+CLEAR columns
+SET PAUSE OFF
