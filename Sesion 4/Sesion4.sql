@@ -25,7 +25,6 @@ end;
 insert into prueba values (1, 'hola que tal');
 select * from prueba;
 select * from otra;
-
 */
 
 /*
