@@ -1,33 +1,4 @@
 /*
-PRUEBA (Codigo, Texto)
-          PK
-OTRA (Codigo, Longitud)
-      PK, FK
-
-create table prueba
-(codigo integer primary key,
-texto varchar(20));
-
-create table otra
-(codigo integer primary key references prueba,
-longitud integer);
-
-create or replace trigger rellenaotra
-after insert on prueba
-for each row
-when (new.texto is not null)
-begin
-insert into otra
-values (:new.codigo, length(:new.texto));
-end;
-/
-
-insert into prueba values (1, 'hola que tal');
-select * from prueba;
-select * from otra;
-*/
-
-/*
 1. Se desea llevar un control de las actualizaciones que se realizan sobre una base de
 datos que está compuesta por las siguientes tablas:
     PROYECTO (COD_PROY, NOMBRE, PRESUPUESTO)
