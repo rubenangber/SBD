@@ -152,7 +152,44 @@ disparadores en los siguientes casos:
     asignado a ninguno
 */
 
+CREATE TABLE EMPLEADO (
+    DNI INTEGER PRIMARY KEY,
+    NOMBRE VARCHAR(20),
+    APELLIDO VARCHAR(50),
+    COD_DEPTO INTEGER REFERENCES DEPARTAMENTO
+);
 
+CREATE OR REPLACE TRIGGER I_EMP
+AFTER INSERT ON EMPLEADO
+FOR EACH ROW
+WHEN (new.COD_DEPTO IS NOT NULL)
+BEGIN
+UPDATE DEPARTAMENTO SET num_empleados = num_empleados + 1
+WHERE cod_dpto = :new.COD_DEPTO;
+END;
+/
+
+CREATE OR REPLACE TRIGGER D_EMP
+AFTER DELETE ON EMPLEADO
+FOR EACH ROW
+WHEN (new.COD_DEPTO IS NOT NULL)
+BEGIN
+UPDATE DEPARTAMENTO SET num_empleados = num_empleados - 1
+WHERE cod_dpto = :old.COD_DEPTO;
+END;
+/
+
+CREATE OR REPLACE TRIGGER U_EMP
+AFTER UPDATE ON EMPLEADO
+FOR EACH ROW
+WHEN (new.COD_DEPTO IS NOT NULL OR old.COD_DEPTO IS NOT NULL)
+BEGIN
+UPDATE DEPARTAMENTO SET num_empleados = num_empleados + 1
+WHERE cod_dpto = :new.COD_DEPTO;
+UPDATE DEPARTAMENTO SET num_empleados = num_empleados - 1
+WHERE cod_dpto = :old.COD_DEPTO;
+END;
+/
 
 /*
 3. Crear dos tablas con los mismos esquemas de las tablas DISPONE y la tabla
@@ -166,7 +203,44 @@ modificaciones sobre las columnas ISBN o COD_SUC. Crear un disparador que
 garantice que no se producirán modificaciones de este tipo.
 */
 
+CREATE TABLE DISPONE2 (
+    cod_suc INTEGER,
+    isbn VARCHAR(20),
+    num_ejemplares INTEGER,
+    num_disponibles INTEGER,
+    PRIMARY KEY (cod_suc, isbn),
+    CHECK (num_disponibles <= num_ejemplares AND num_disponibles >= 0 AND num_ejemplares >= 0)
+);
 
+CREATE TABLE PRESTAMO2 (
+    codigo INTEGER PRIMARY KEY,
+    cod_lector INTEGER;
+    isbn VARCHAR(20),
+    cod_suc INTEGER,
+    fecha_ini date,
+    fecha_dev date,
+    FOREIGN KEY (cod_suc, isbn) REFERENCES DISPONE2 (cod_suc, isbn)
+);
+
+CREATE OR REPLACE TRIGGER I_PRESTAMO
+AFTER INSERT ON PRESTAMO2
+FOR EACH ROW
+WHEN (new.fecha_dev IS NULL)
+BEGIN
+UPDATE DISPONE2 SET num_disponibles = num_disponibles - 1
+WHERE isbn = :new.isbn AND cod_suc = :new.cod_suc;
+END;
+/
+
+CREATE OR REPLACE TRIGGER D_PRESTAMO
+AFTER DELETE ON PRESTAMO2
+FOR EACH ROW
+WHEN (old.fecha_dev IS NULL)
+BEGIN
+UPDATE DISPONE2 SET num_disponibles = num_disponibles + 1
+WHERE isbn = :old.isbn AND cod_suc = :old.cod_suc;
+END;
+/
 
 /*
 4. La biblioteca desea incentivar los hábitos de lectura de sus socios estableciendo una
@@ -225,9 +299,15 @@ DROP TRIGGER up_dep;
 DROP TRIGGER del_dep;
 DROP TRIGGER clave_reg;
 
-2
+DROP TABLE EMPLEADO;
+DROP TRIGGER I_EMP;
+DROP TRIGGER D_EMP;
+DROP TRIGGER U_EMP;
 
-3
+DROP TABLE DISPONE2;
+DROP TABLE PRESTAMO2;
+DROP TRIGGER I_PRESTAMO;
+DROP TRIGGER D_PRESTAMO;
 
 DROP TABLE CLASIFICACION;
 DROP SEQUENCE secuencia;
