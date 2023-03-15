@@ -44,7 +44,7 @@ CREATE VIEW FINSUC1 AS
 SELECT * FROM PRESTAMO 
 WHERE fecha_dev IS NOT NULL AND cod_suc = 1;
 
-/*
+/* 
 6. Usar la vista anterior para insertar una nueva tupla en la tabla PRESTAMO
 correspondiente a un préstamo de la sucursal 4. Comprobar la diferencia de
 comportamiento si la vista está creada con la claúsula WITH CHECK OPTION o
