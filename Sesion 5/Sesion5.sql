@@ -182,3 +182,25 @@ los dos disparadores necesarios para registrar los datos de modificación en cad
 de las tablas PROYECTO y DEPARTAMENTO. Consultar el contenido de la tabla
 REGISTRO para comprobar que los disparadores han funcionado correctamente
 */
+
+CREATE TABLE PROYECTO (
+    COD_PROY INTEGER PRIMARY KEY,
+    NOMBRE VARCHAR(20),
+    PRESUPUESTO INTEGER
+);
+
+CREATE TABLE DEPARTAMENTO (
+    COD_DPTO INTEGER PRIMARY KEY,
+    NOMBRE VARCHAR(20),
+    DIRECCION VARCHAR (50),
+    NUM_EMPLEADOS INTEGER
+);
+
+CREATE TABLE REGISTRO (
+    ID INTEGER PRIMARY KEY,
+    FECHA DATE,
+    USAUARIO VARCHAR(20),
+    TABLA VARCHAR(10),
+    COD_ITEM INTEGER,
+    ACCION VARCHAR(10)
+);
