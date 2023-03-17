@@ -149,10 +149,10 @@ CREATE TABLE ANUNCIO (
 );
 GRANT ALL ON ANUNCIO TO PUBLIC;
 
-INSERT INTO ANUNCIO (Codigo, texto) VALUES
-(SEQ_ANUNCIO.NEXTVAL, 'Anuncio 1');
-INSERT INTO ANUNCIO (Codigo, texto) VALUES
-(SEQ_ANUNCIO.NEXTVAL, 'Anuncio 2');
+INSERT INTO ANUNCIO (Codigo, texto) 
+VALUES(SEQ_ANUNCIO.NEXTVAL, 'Anuncio 1');
+INSERT INTO ANUNCIO (Codigo, texto) 
+VALUES(SEQ_ANUNCIO.NEXTVAL, 'Anuncio 2');
 
 /*
 13. Crear una vista MISANUNCIOS que recupere los datos de los anuncios cuyo autor
