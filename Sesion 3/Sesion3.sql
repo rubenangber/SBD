@@ -69,7 +69,6 @@ WITH READ ONLY;
 
 DELETE FROM FINSUC1 WHERE fecha_dev < SYSDATE - 365 * 5;
 
-
 /*
 8. Examínese la diferencia entre tener un privilegio sobre una tabla y tenerlo sobre una
 vista definida sobre esa tabla. En especial, la manera en que un usuario puede tener
