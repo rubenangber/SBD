@@ -11,13 +11,13 @@ DECLARE
     CURSOR C1 IS SELECT codigo, poblacion, provincia FROM sucursal;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('DIRECCIÓN DE LAS SUCURSALES');
-    DBMS_OUTPUT.PUT_LINE(rpad('CODIGO', 8, ' ') || ' ' || rpad('POBLACION', 15, ' ') || chr(9) || rpad('PROVINCIA',15, ' '));
+    DBMS_OUTPUT.PUT_LINE(rpad('CODIGO', 8, ' ') || ' ' || rpad('POBLACION', 15, ' ') || chr(9) || rpad('PROVINCIA', 15, ' '));
  OPEN C1;
  LOOP
  FETCH C1 INTO codigo_suc, poblacion_suc, provincia_suc;
  EXIT WHEN C1%NOTFOUND;
 
-    DBMS_OUTPUT.PUT_LINE(rpad(codigo_suc,8, ' ')|| ' ' || rpad(poblacion_suc, 15, ' ') || chr(9) || rpad(provincia_suc, 15, ' '));
+    DBMS_OUTPUT.PUT_LINE(rpad(codigo_suc, 8, ' ')|| ' ' || rpad(poblacion_suc, 15, ' ') || chr(9) || rpad(provincia_suc, 15, ' '));
 
 END LOOP;
     CLOSE C1;

@@ -9,8 +9,6 @@
     f. Campos en que se basan las claves del apartado e).
 */
 
-
-
 /*
 2. Consultar el catálogo del sistema para obtener la siguiente información:
     a. Nombre de todas las tablas y vistas creadas por el usuario
@@ -26,8 +24,6 @@
     h. Elimine las tablas de las que es propietario y verifique que lo
     ha hecho
 */
-
-
 
 /*
 3. Consultar el catálogo del sistema para obtener la siguiente información:
