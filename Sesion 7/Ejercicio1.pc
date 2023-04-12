@@ -1,0 +1,28 @@
+#include <stdio.h>
+exec sql include sqlca;
+
+exec sql begin declare section;
+        char oracleid[]="/";
+        char nomlec[15], ape1lec[20], ape2lec[20];
+        int codigo;
+    exec sql end declare section;
+
+int main (){
+
+    printf ("Introduzca codigo del autor: ");
+    scanf ("%d", &codigo);
+
+    exec sql connect :oracleid;
+    printf ("CONEXION: %d, %s\n", sqlca.sqlcode, sqlca.sqlerrm.sqlerrmc);
+
+    exec sql select Nombre, Ape_1, Ape_2 into :nomlec, :ape1lec, :ape2lec from lector
+    where codigo=:codigo;
+
+    printf ("SELECT: %d, %s\n", sqlca.sqlcode, sqlca.sqlerrm.sqlerrmc);
+    if (sqlca.sqlcode == 0) {
+        printf("NOMBRE Y APELLIDOS; %s %s %s\n", nomlec, ape1lec, ape2lec);
+    } else {
+        printf("ERROR");
+    }
+    exec sql commit work release;
+}
