@@ -1,3 +1,5 @@
+/*START Sesion1*/
+
 /*
 1. Mandar los resultados de realizar la siguiente consulta a un fichero de cola al que
 daremos el nombre que estimemos. Devolver el nombre y los apellidos de todos los
@@ -10,10 +12,11 @@ será necesario en SQL*Plus
 */
 
 spool Ejercicio1
+ttitle 'Lectores de Salamanca con prestamos en 2011'
 SELECT DISTINCT nombre, ape_1, ape_2 FROM LECTOR l, PRESTAMO p WHERE l.codigo = p.cod_lector AND 
 to_char(fecha_ini, 'YYYY') = 2011 AND poblacion = 'SALAMANCA';
+ttitle OFF
 spool OFF
-show spool
 
 /*
 2. Generar un fichero de comandos que realice un listado de todos los préstamos
@@ -22,7 +25,9 @@ cronológicamente.
 */
 
 spool Ejercicio2 SET echo OFF
+ttitle 'Listado de préstamos ordenados por sucursal y fecha'
 SELECT * FROM PRESTAMO p ORDER BY p.cod_suc, fecha_ini;
+ttitle OFF
 spool OFF
 show spool
 
@@ -37,7 +42,9 @@ su fecha de nacimiento o de muerte. Para ello será necesario
     nombre.sql
 */
 
+spool Ejercicio3
 SELECT * FROM AUTOR WHERE ano_nac IS NULL OR ano_fall IS NULL;
+spool OFF
 SAVE Ejercicio3
 
 /*
@@ -67,8 +74,12 @@ pause.
 
 SET PAUSE 'Pulse alguna tecla para continuar' 
 SET PAUSE ON
+spool Ejercicio6 
+ttitle 'Listado de libros de una sucursal &1'
 SELECT l.isbn, titulo FROM LIBRO l, DISPONE d WHERE l.isbn = d.isbn AND
-cod_suc = 1 ORDER BY l.isbn;
+cod_suc = &1 ORDER BY l.isbn;
+ttitle OFF
+spool OFF
 
 /*
 7. Sacar la información de todos los autores de los que o bien no se conoce su fecha de
