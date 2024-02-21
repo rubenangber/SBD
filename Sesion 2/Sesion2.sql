@@ -3,8 +3,12 @@
 sucursal 9. Comprobar que la actualización ha sido correcta.
 */
 
+SELECT num_ejemplares, num_disponibles FROM DISPONE WHERE ISBN = 5025496 AND cod_suc = 9;
+
 UPDATE DISPONE SET num_ejemplares = num_ejemplares + 3, num_disponibles = num_disponibles + 2
 WHERE ISBN = 5025496 AND cod_suc = 9;
+
+SELECT num_ejemplares, num_disponibles FROM DISPONE WHERE ISBN = 5025496 AND cod_suc = 9;
 
 
 /*
@@ -12,25 +16,34 @@ WHERE ISBN = 5025496 AND cod_suc = 9;
 Aldeadávila en la provincia de Salamanca. Actualice sus datos en la base de datos.
 */
 
+SELECT direccion, poblacion, provincia FROM LECTOR WHERE codigo = 15838332;
+
 UPDATE LECTOR 
-SET direccion = 'C/Sevilla, 1', poblacion = 'Aldeadávila', provincia = 'Salamanca'
-WHERE codigo = 7395860;
+SET direccion = 'C/Sevilla, 1', poblacion = 'Aldeadavila', provincia = 'Salamanca'
+WHERE codigo = 15838332;
 
+SELECT direccion, poblacion, provincia FROM LECTOR WHERE codigo = 15838332;
 
-/*3. Actualizar la tabla SUCURSAL la sucursal con código 15 para que pase a estar
+/*
+3. Actualizar la tabla SUCURSAL la sucursal con código 15 para que pase a estar
 ubicada en la ciudad de SEGOVIA con dirección en C/ SAN AGUSTÍN, 10.
 */
+
+SELECT * FROM SUCURSAL WHERE codigo = 15;
 
 UPDATE SUCURSAL 
 SET provincia = 'Segovia', direccion = 'C/SAN AGUSTIN, 10' 
 WHERE codigo = 15;
 
+SELECT * FROM SUCURSAL WHERE codigo = 15;
 
 /*
 4. Actualizar la dirección de los lectores con códigos 71259836 y 94246322 a Av. de
 Alemania, 49, Miajadas, Cáceres y Daoiz y Velarde, 24, Benavente, Zamora,
 respectivamente.
 */
+
+SELECT * FROM LECTOR WHERE codigo = 71259836 OR codigo = 94246322;
 
 UPDATE LECTOR
 SET direccion = 'AVD/Alemania, 49', poblacion = 'Miajadas', provincia = 'Caceres'
@@ -39,6 +52,7 @@ UPDATE LECTOR
 SET direccion = 'Daoiz y Velarde, 24', poblacion = 'Benavente', provincia = 'Zamora'
 WHERE codigo = 94246322;
 
+SELECT * FROM LECTOR WHERE codigo = 71259836 OR codigo = 94246322;
 
 /*
 5. Se acaban de comprar 15 ejemplares, 1 para cada una de las 15 sucursales, del
@@ -74,7 +88,9 @@ INSERT INTO DISPONE VALUES (15, 8408104829, 1, 1);
 Caballeros, 32”. Esta sucursal tendrá asociado el código 16.
 */
 
-INSERT INTO SUCURSAL VALUES (16, 'alle de los Caballeros, 32', 'Soria', 'Soria');
+INSERT INTO SUCURSAL VALUES (16, 'Calle de los Caballeros, 32', 'Soria', 'Soria');
+
+SELECT * FROM SUCURSAL WHERE codigo = 16;
 
 /*
 7. La nueva sucursal creada en la ciudad de Soria en el ejercicio anterior, se dota con
