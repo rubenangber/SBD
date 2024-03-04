@@ -62,4 +62,26 @@ ON nombre_tabla / nombre_view...
 TO PUBLIC / usuario1, usuario2...
 [WITH GRANT OPTION];
 ```
-WITH GRANT OPTION se refiere a la capacidad de un usuario para otorgar los mismos privilegios a otros usuarios. Al utilizar WITH GRANT OPTION, estás permitiendo que el usuario al que le estás otorgando los privilegios tenga la capacidad de otorgar esos mismos privilegios a otros usuarios
+WITH GRANT OPTION se refiere a la capacidad de un usuario para otorgar los mismos privilegios a otros usuarios. Al utilizar WITH GRANT OPTION, estás permitiendo que el usuario al que le estás otorgando los privilegios tenga la capacidad de otorgar esos mismos privilegios a otros usuarios <br><br>
+
+Para revocar los privilegio/s a un usuario/s se utiliza
+```
+REVOKE (ALL PRIVILEGES) / privilegio1, privilegio2...
+ON nombre_tabla / nombre_view... 
+FROM PUBLIC / usuario1, usuario2...
+
+REVOKE { INSERT | UPDATE | REFERENCES } [, ...] [ (
+columna [, ...] ) ] ON objeto FROM { PUBLIC | nombre_usuario
+[, ...] }
+```
+
+## ALTER
+Permite añadir o eliminar columnas y condiciones de integridad a tablas ya creadas
+```
+ALTER TABLE tabla
+ADD [CONSTRAINT nombre] restricción_tabla
+DROP CONSTRAINT nombre
+ADD especificación_columna
+DROP COLUMN columna [CASCADE CONSTRAINT] 
+```
+CASCADE CONSTRAINT se utiliza para especificar que se deben eliminar las restricciones (constraints) referentes a una columna específica y que todas las restricciones que dependen de esa columna también deben eliminarse
