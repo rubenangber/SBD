@@ -1,0 +1,39 @@
+/*Escribir un programa en el que se obtenga un listado de todos los libros existentes
+en la biblioteca mostrando el ISBN y el título. Para el título se mostrarán solo los 30
+primeros caracteres, seguidos de puntos suspensivos (…) en el caso en que el título
+no pueda mostrarse completo. La siguiente imagen muestra un fragmento de la
+salida del programa*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        char isbn[10];
+        char titulo[30];
+        short vind;
+    exec sql end declare section;
+
+    exec sql connect :oracleid;
+
+    exec sql declare micursor cursor for select ISBN, Titulo from Libro order by ISBN;
+
+    exec sql open micursor;
+
+    exec sql fetch micursor into :isbn, :titulo:vind;
+
+    printf("ISBN\t\tTITULO\n");
+
+    while(sqlca.sqlcode == 0) {
+        if(vind) {
+            printf("%s\t%s...\n", isbn, titulo);
+        } else {
+            printf("%s\t%s\n", isbn, titulo);
+        }
+        exec sql fetch micursor into :isbn, :titulo:vind;
+    }
+
+    exec sql close micursor;
+    exec sql commit work release;
+}

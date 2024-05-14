@@ -1,0 +1,31 @@
+/*Obtener un listado de los títulos distintos que tiene cada una de las sucursales que
+incluya el código de la sucursal, número de títulos distintos y número de ejemplares
+total de cada sucursal, ordenado por sucursales, como se observa en la siguiente
+figura*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int numSuc, titulos, total;
+    exec sql end declare section;
+
+    exec sql declare micursor cursor for select Cod_Suc, count(ISBN), sum(Num_Ejemplares) from Dispone group by Cod_Suc order by 1;
+
+    exec sql connect :oracleid;
+
+    exec sql open micursor;
+    exec sql fetch micursor into :numSuc, :titulos, :total;
+
+    printf("LISTADO DE LIBROS POR SUCURSALES\n");
+    printf("SUCURSAL\tTITULOS\tTOTAL\n");
+    while(sqlca.sqlcode == 0) {
+        printf("%d\t\t%d\t%d\n", numSuc, titulos, total);
+        exec sql fetch micursor into :numSuc, :titulos, :total;
+    }
+
+    exec sql close micursor;
+    exec sql commit work release;
+}

@@ -1,0 +1,48 @@
+/*Escribir un programa que permita solicite la entrada por teclado de los datos de un
+nuevo autor y haga la inserción correspondiente en la tabla AUTOR. Se tendrá en
+cuenta que el año de fallecimiento será nulo para autores vivos*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int cod;
+        char nom[15], ape[20];
+        int nac, fall, codNac;
+        short vind;
+        char respuesta;
+    exec sql end declare section;
+
+    exec sql connect :oracleid;
+
+    exec sql select max(Codigo) + 1 into :cod from autor;
+
+    printf("Nombre >> ");
+    scanf("%s", nom);
+    printf("Apellidos >> ");
+    scanf("%s", ape);
+    printf("Año nacimiento >> ");
+    scanf("%d", &nac);
+    printf("Esta muerto? S/N >> ");
+    scanf(" %c", &respuesta); 
+
+    if(respuesta == 's' || respuesta == 'S') {
+        printf("Año muerte >> ");
+        scanf("%d", &fall);
+        vind = 0;
+    } else {
+        vind = -1;
+    }
+
+    printf("Cod Nacion >> ");
+    scanf("%d", &codNac);
+
+    exec sql insert into autor values(:cod, :nom, :ape, :nac, :fall:vind, :codNac);
+    if(sqlca.sqlcode == 0) {
+        printf("Autor agregado correctamente\n");
+    }
+
+    exec sql commit work release;
+}

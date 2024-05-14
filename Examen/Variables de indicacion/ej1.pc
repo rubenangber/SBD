@@ -1,0 +1,57 @@
+/*Obtener el listado de los prestamos de un libro cuyo ISBN se introducirá por
+teclado. En el listado se incluirá un encabezado en el que aparecerán los datos del
+libro y, a continuación, se mostrarán todos los préstamos que ha tenido el libro,
+agrupados por sucursales y, para cada sucursal ordenado por fecha de inicio del
+préstamo. Si el préstamo no ha finalizado, en la columna correspondiente a la fecha
+de devolución se mostrará el texto “PENDIENTE”. A continuación se muestra un
+ejemplo de ejecución del programa*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        char isbn[15], titulo[35], nomAutor[20], apeAutor[30];
+        int suc;
+        char nomL[10], ap1L[15], ap2L[15], fini[10], fdev[10];
+        short vind;
+    exec sql end declare section;
+    int actSuc = 0;
+
+    printf("Introduzca ISBN >> ");
+    scanf("%s", isbn);
+
+    exec sql connect :oracleid;
+
+    exec sql select l.Titulo, a.Nombre, a.Apellido into :titulo, :nomAutor, :apeAutor from Libro l, Escribe e, Autor a where l.ISBN =:isbn AND l.ISBN = e.ISBN AND e.Cod_Autor = a.Codigo;
+
+    exec sql declare micursor cursor for select Cod_Suc, Nombre, Ape_1, Ape_2, Fecha_ini, Fecha_Dev from Prestamo p, Lector l where p.ISBN = :isbn AND p.Cod_Lector = l.Codigo order by 1, 3, 4, 2;
+
+    exec sql open micursor;
+
+    if(sqlca.sqlcode == 0) {
+        printf("ISBN: %s\n", isbn);
+        printf("TITULO: %s\n", titulo);
+        printf("AUTOR(ES) %s %s\n", nomAutor, apeAutor);
+
+        exec sql fetch micursor into :suc, :nomL, :ap1L, :ap2L, :fini, :fdev:vind;
+
+        while(sqlca.sqlcode == 0) {
+            if(actSuc != suc) {
+                
+                printf("SUCURSAL %d\n", suc);
+                printf("APELLIDOS Y NOMBRE\t\t\tFECHA PRESTAMO\tFECHA DEVOLUCION\n");
+                actSuc = suc;
+            }
+            if(vind == -1) {
+                printf("%s %s,%s\t%s\tPENDIENTE\n", ap1L, ap2L, nomL, fini);
+            } else {
+                printf("%s %s,%s\t%s\t%s\n", ap1L, ap2L, nomL, fini, fdev);
+            }
+            exec sql fetch micursor into :suc, :nomL, :ap1L, :ap2L, :fini, :fdev:vind;
+        }
+    }
+    exec sql close micursor;
+    exec sql commit work release;
+}

@@ -1,0 +1,50 @@
+/*Obtener un listado de los libros más prestados en cada sucursal y para cada uno de
+ellos el nombre del título, ISBN y el número de préstamos contabilizados, ordenado
+por código de sucursa*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int codSuc;
+        char titulo[20], isbn[15];
+        int totalPrest;
+    exec sql end declare section;
+    int actualSuc = 0;
+
+    EXEC SQL DECLARE micursor CURSOR FOR
+        SELECT p.cod_suc, l.ISBN, l.titulo, COUNT(*) AS num_prestamos
+        FROM prestamo p, libro l
+        WHERE p.ISBN = l.ISBN
+        GROUP BY p.cod_suc, l.titulo, l.ISBN
+        HAVING COUNT(*) = (
+            SELECT MAX(p2.num_prestamos)
+            FROM (
+                SELECT cod_suc, ISBN, COUNT(*) AS num_prestamos
+                FROM prestamo
+                GROUP BY cod_suc, ISBN
+            ) p2
+            WHERE p2.cod_suc = p.cod_suc
+        )
+        ORDER BY p.cod_suc;
+
+
+
+    exec sql connect :oracleid;
+    exec sql open micursor;
+    exec sql fetch micursor into :codSuc, :isbn, :titulo, :totalPrest;
+
+    while(sqlca.sqlcode == 0) {
+        if(actualSuc != codSuc) {
+            printf("\nSUCURSAL %d\n", codSuc);
+            printf("TITULO\t\t\tISBN\t\tTOTAL\n");
+            actualSuc = codSuc;
+        }
+        printf("%s\t%s\t%d\n", titulo, isbn, totalPrest);
+        exec sql fetch micursor into :codSuc, :isbn, :titulo, :totalPrest;
+    }
+    exec sql close micursor;
+    exec sql commit work release;
+}
