@@ -1,0 +1,16 @@
+/*La biblioteca ha cerrado la sucursal 3, por tanto todos los registros correspondientes
+a sus datos deberán ser eliminados de la base de datos. Estudie previamente cuáles
+han de ser las tablas en las que deben hacerse las modificaciones y añada al final del
+programa unas instrucciones que indiquen el número de registros borrados en cada
+una de ellas teniendo en cuenta los criterios de integridad referencial*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+
+    exec sql en declare section;
+
+}

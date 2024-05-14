@@ -1,0 +1,38 @@
+/*Obtener un listado de autores agrupados por nacionalidades y ordenados por su
+primer y segundo apellido, que aparezca de la forma siguiente:
+NACIONALIDAD:
+AUTORES: <nº de autores para dicha nacionalidad>
+APELLIDO NOMBRE AÑO NAC*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        char nac[20], apell[25], nom[20];
+        int anio, autores, codNac;
+    exec sql end declare section;
+    int actualNac = 0;
+
+    exec sql declare micursor cursor for select n.Codigo, n.Nombre, a.Nombre, a.Apellido, a.Ano_Nac from Autor a, Nacionalidad n where a.Cod_Nacion = n.Codigo order by n.Codigo, a.Apellido;
+
+    exec sql connect :oracleid;
+    exec sql open micursor;
+    exec sql fetch micursor into :codNac, :nac, :nom, :apell, :anio;
+
+    while(sqlca.sqlcode == 0 || sqlca.sqlcode == -1405) {
+        if(actualNac != codNac) {
+            printf("\n\nNACIONALIDAD: %s\n", nac);
+            exec sql select count(*) into :autores from Autor where Cod_Nacion = :codNac;
+            printf("AUTORES %d\n", autores);
+            printf("APELLIDOS\t\t NOMBRE\t\t ANO NACIMIENTO\n");
+            actualNac = codNac;
+        }
+        printf("%s %s %d\n", apell, nom, anio);
+        exec sql fetch micursor into :codNac, :nac, :nom, :apell, :anio;
+    }
+    
+    exec sql close micursor;
+    exec sql commit work release;
+}

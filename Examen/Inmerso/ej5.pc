@@ -1,0 +1,26 @@
+/*Obtener toda la información de un autor a partir del código de éste, introducido por
+el usuario*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int cod;
+        char nombre[20], ape[50];
+        int nac, fall, codNac;
+    exec sql end declare section;
+
+    exec sql connect :oracleid;
+
+    printf("Cod Autor >> ");
+    scanf("%d", &cod);
+
+    exec sql select Nombre, Apellido, Ano_Nac, Ano_Fall, Cod_Nacion into :nombre, :ape, :nac, :fall, :codNac from Autor where Codigo = :cod;
+
+    if(sqlca.sqlcode == 0) {
+        printf("%s %s %d %d %d\n", nombre, ape, nac, fall, codNac);
+    }
+    exec sql commit work release;
+}

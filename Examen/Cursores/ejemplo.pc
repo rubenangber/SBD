@@ -1,0 +1,31 @@
+/*Obtener los préstamos de un lector. Pedir el
+código del lector por teclado ordenados por la fecha de inicio*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        char nombre[20], isbn[20];
+        int codLector;
+    exec sql end declare section;
+
+    exec sql declare micursor cursor for
+    select l.Nombre, p.ISBN from Lector l, Prestamo p where l.Codigo = :codLector AND l.Codigo = p.Cod_Lector order by p.Fecha_Ini;
+
+    printf("Cod Lector >> ");
+    scanf("%d", &codLector);
+
+    exec sql connect :oracleid;
+    exec sql open micursor;
+    exec sql fetch micursor into :nombre, :isbn;
+
+    while(sqlca.sqlcode == 0) {
+        printf("%s %s\n", nombre, isbn);
+        exec sql fetch micursor into :nombre, :isbn;
+    }
+
+    exec sql close micursor;
+    exec sql commit work release;
+}

@@ -94,9 +94,9 @@ DECLARE
     NUM3 NUMBER;
     MEDIA NUMBER;
 BEGIN
-    NUM1 := 5;
-    NUM2 := 3.4;
-    NUM3 := 5.9;
+    NUM1 := &1;
+    NUM2 := &2;
+    NUM3 := &3;
     MEDIA := (NUM1 + NUM2 + NUM3) / 3;
     DBMS_OUTPUT.PUT_LINE('La media de los numeros es >> ' || MEDIA);
 END;

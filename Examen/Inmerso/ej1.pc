@@ -1,0 +1,26 @@
+/*Obtener el nombre y apellidos de un lector a partir de su código, que es introducido
+por el usuario*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        char nombre[20], ap1[50], ap2[50];
+        int cod;
+    exec sql end declare section;
+
+    exec sql connect :oracleid;
+
+    printf("Cod_Lector >> ");
+    scanf("%d", &cod);
+
+    exec sql select Nombre, Ape_1, Ape_2 into :nombre, :ap1, :ap2 from Lector where Codigo = :cod;
+
+    if(sqlca.sqlcode == 0) {
+        printf("%d\t%s %s %s\n", cod, nombre, ap1, ap2);
+    }
+
+    exec sql commit work release;
+}

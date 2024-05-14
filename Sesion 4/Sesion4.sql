@@ -105,6 +105,16 @@ END;
 /*
 Hacer IMPORT, UPDATE Y DELETE para comprobar el funcionamiento de los TRIGGERS
 */
+
+INSERT INTO PROYECTO VALUES (1, 'Proyecto 1', 1000);
+INSERT INTO DEPARTAMENTO VALUES (1, 'Departamento 1', 'Calle 1', 10);
+
+UPDATE PROYECTO SET cod_proy = 2 WHERE cod_proy = 1;
+UPDATE DEPARTAMENTO SET cod_dpto = 2 WHERE cod_dpto = 1;
+
+DELETE FROM PROYECTO WHERE cod_proy = 2;
+DELETE FROM DEPARTAMENTO WHERE cod_dpto = 2;
+
 SELECT * FROM REGISTRO;
 
 /*

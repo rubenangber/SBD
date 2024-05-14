@@ -1,0 +1,40 @@
+
+
+
+
+/*1. Obtener un listado de los lectores que tienen actualmente en préstamo el libro con
+ISBN 5024728 desglosado por sucursales y ordenado alfabéticamente dentro de
+cada sucursal.
+*/
+exec sql include sqlca;
+
+
+
+int main()
+
+{ 
+exec sql begin declare section;
+    int v_codigo;
+    char v_nombre[20];
+    char ape1[50];
+    char ape2[50];
+
+    char oracleid[]="/" ;
+exec sql end declare section;
+exec sql declare micursor cursor for
+select l.codigo,l.nombre,l.Ape_1,l.Ape_2 from lector l, prestamo p
+WHERE l.codigo = p.cod_lector AND p.ISBN = 5024728
+order by p.Codigo;
+
+exec sql connect :oracleid;
+exec sql open micursor;
+exec sql fetch micursor into :v_codigo, :v_nombre, :ape1, :ape2;
+while(sqlca.sqlcode == 0){
+    printf("%d %-20s %-20s %-20s\n",v_codigo,v_nombre, ape1, ape2);
+    exec sql fetch micursor into :v_codigo, :v_nombre;
+}
+exec sql close micursor;
+
+exec sql commit work release;
+
+}

@@ -1,0 +1,25 @@
+/*Obtener el número de préstamos no finalizados contabilizados para una sucursal a
+partir del código de la sucursal*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int numPres, codSuc;
+    exec sql end declare section;
+
+    exec sql connect :oracleid;
+
+    printf("Cod suc >> ");
+    scanf("%d", &codSuc);
+
+    exec sql select count(*) into :numPres from Prestamo where Cod_Suc = :codSuc AND Fecha_Dev is null;
+
+    if(sqlca.sqlcode == 0) {
+        printf("%d prestamos en curso en la suc %d\n", numPres, codSuc);
+    }
+
+    exec sql commit work release;
+}

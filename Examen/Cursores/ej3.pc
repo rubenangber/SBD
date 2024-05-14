@@ -1,0 +1,39 @@
+/*Aumentar el número de ejemplares en 2 unidades disponibles para las sucursales 1 y
+2 en aquellos libros de los que dispongan de menos de 3 ejemplares (prestados o no
+prestados). Mostrar un mensaje por cada sucursal y libro actualizado, mostrando su
+ISBN y el número de ejemplares finales tras la actualización*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int codSuc, ejemplares, disponibles;
+        char isbn[15];
+    exec sql end declare section;
+    int actSuc = 0;
+
+    exec sql declare micursor cursor for select Cod_Suc, ISBN, Num_Ejemplares, Num_Disponibles from Dispone where Cod_Suc in (1, 2) AND Num_Ejemplares < 3 order by Cod_Suc;
+
+    exec sql connect :oracleid;
+    exec sql open micursor;
+
+    exec sql fetch micursor into :codSuc, :isbn, :ejemplares, :disponibles;
+
+    while(sqlca.sqlcode == 0) {
+        if(actSuc != codSuc) {
+            printf("\nSUCURSAL %d\n", codSuc);
+            actSuc = codSuc;
+        }
+        exec sql update Dispone set Num_Disponibles = :disponibles+2, Num_Ejemplares = :ejemplares+2 where current of micursor;
+
+        printf("ISBN %s actualizado %d ejemplares\n", isbn, ejemplares + 2);
+
+        exec sql fetch micursor into :codSuc, :isbn, :ejemplares, :disponibles;
+    }
+    exec sql close micursor;
+    exec sql commit work release;
+}
+
+/*UPDATE dispone SET num_ejemplares = 2, num_disponibles = 2 WHERE cod_suc = 1 OR cod_suc = 2;*/

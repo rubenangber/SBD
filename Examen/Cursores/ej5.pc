@@ -1,0 +1,52 @@
+/*Obtener el expediente de préstamos realizados de un lector cualquiera conociendo
+su código. En el expediente debe aparecer el código y nombre del lector y a
+continuación un listado de los libros tomados en préstamo por orden cronológico de
+la fecha en la que se inició dicho préstamo. El expediente mostrará el nombre de
+dichos libros, la fecha de devolución si ha sido devuelto y la sucursal en la que
+realizó dicho préstamo. Al final de dicho expediente se dará el número total de
+préstamos realizados y pendiente*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        int codLector;
+        char nom[20], ap1[25], ap2[25], fini[10], fdev[10];
+        int codSuc;
+        char isbn[15];
+        int numPrestamos, pendientes;
+    exec sql end declare section;
+
+    printf("Cod Lector >> ");
+    scanf("%d", &codLector);
+
+    exec sql declare micursor cursor for select Cod_Suc, ISBN, Fecha_Ini, Fecha_Dev from Prestamo where Cod_Lector = :codLector order by Fecha_Ini;
+
+    exec sql connect :oracleid;
+
+    exec sql select Nombre, Ape_1, Ape_2 into :nom, :ap1, :ap2 from Lector where Codigo = :codLector;
+
+    if(sqlca.sqlcode == 0) {
+        printf("CODIGO %d\tNOMBRE: %s %s,%s\n", codLector, ap1, ap2, nom);
+
+        printf("SUCURSAL\tISBN\t\tFECHA_INI\tFECHA_DEV\n");
+
+        exec sql open micursor;
+        exec sql fetch micursor into :codSuc, :isbn, :fini, fdev;
+        while(sqlca.sqlcode == 0 || sqlca.sqlcode == -1405) {
+            printf("%d\t\t%s\t%s\t%s\n", codSuc, isbn, fini, fdev);
+            exec sql fetch micursor into :codSuc, :isbn, :fini, fdev;
+        }
+    }
+
+    exec sql select count(*) into numPrestamos from prestamo where cod_Lector = :codLector;
+
+    exec sql select count(*) into pendientes from prestamo where cod_Lector = :codLector AND Fecha_Dev is null;
+
+    printf("TOTAL DE PRESTAMOS %d\t\tPENDIENTES %d\n", numPrestamos, pendientes);
+
+    exec sql close micursor;
+    exec sql commit work release;
+}

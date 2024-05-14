@@ -1,0 +1,29 @@
+/*Obtener el número de préstamos en un año concreto contabilizados para una
+sucursal a partir del código de la sucursal y el año elegido*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] ="/";
+        int numPres, anio, codSucu;
+    exec sql end declare section;
+
+    exec sql connect :oracleid;
+
+    printf("Cod suc >> ");
+    scanf("%d", &codSucu);
+
+    printf("Año >> ");
+    scanf("%d", &anio);
+
+    exec sql select count(*) into :numPres from Prestamo where Cod_Suc = :codSucu AND to_char(Fecha_Ini, 'yyyy') =: anio;
+
+    if(sqlca.sqlcode == 0) {
+        printf("%d prestamos en la suc %d el año %d\n", numPres, codSucu, anio);
+    }
+
+    exec sql commit work release;
+
+}
