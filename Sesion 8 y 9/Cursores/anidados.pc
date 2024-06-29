@@ -1,0 +1,48 @@
+/*Obtener un listado de los títulos de todos los libros de la base de datos, desglosado
+por nacionalidades de sus autores y por autores*/
+
+#include <stdlib.h>
+exec sql include sqlca;
+
+int main() {
+    exec sql begin declare section;
+        char oracleid[] = "/";
+        char nacion[10];
+        char nombreAutor[15], apeAutor[20];
+        char titulo[50];
+        int codNacion, codAutor;
+    exec sql end declare section;
+
+    exec sql declare cursor1 cursor for select Codigo, Nombre from Nacionalidad order by Nombre;
+
+    exec sql declare cursor2 cursor for select Cod_Autor, Nombre, Apellido from autor where cod_nacion = :codNacion order by Apellido, Nombre;
+
+    exec sql declare cursor3 cursor for select Titulo from libro l, escribe e where l.isbn = e.isbn AND e.Cod_Autor = :codAutor order by Titulo;
+
+    exec sql connect :oracleid;
+    
+    exec sql open cursor1;
+    exec sql fetch cursor1 into :codNacion, :nacion;
+    while (sqlca.sqlcode == 0) {
+        printf ("\n\nNACION:\t %s\n", nacion);
+        printf ("************************************\n");
+        exec sql open cursor2;
+        exec sql fetch cursor2 into :codAutor, :nombreAutor, :apeAutor;
+        while (sqlca.sqlcode == 0) {
+            printf ("\n\tAUTOR:\t %-10s %-10s\n", nombreAutor, apeAutor);
+            printf ("\t--------------------------------------------------------------\n\n");
+            exec sql open cursor3;
+            exec sql fetch cursor3 into :titulo;
+            while (sqlca.sqlcode == 0) {
+                printf ("\t\t%-20s\n", titulo);
+                exec sql fetch cursor3 into :titulo;
+            }
+            exec sql close cursor3;
+            exec sql fetch cursor2 into :codAutor, :nombreAutor, :apeAutor;
+        }
+        exec sql close cursor2;
+        exec sql fetch cursor1 into :codNacion, :nacion;
+    }
+    exec sql close cursor1;
+    exec sql commit work release;
+}
